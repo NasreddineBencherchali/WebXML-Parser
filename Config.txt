@@ -1,7 +1,21 @@
 [WebXML-Parser-Config]
+; The path of the web.xml file
 web_xml_path = C:/Users/monst/Downloads/Compressed/Source Code/Gparc/Gparc-web-1.0/WEB-INF/web.xml
+
+; The path of the application web pages
 application_pages_path = C:/Users/monst/Downloads/Compressed/Source Code/Gparc/Gparc-web-1.0/pages
+
+; The name of the application, as it shows in the URL
 application_name = MyApp
+
+; The IP address of the Web-Application
 application_ip_address = 192.168.1.1
+
+; Boolean for the usage of HTTPS
 https_bool = True
+
+; Boolean / Value for the usage of a Proxy
 proxy_bool = False
+http_proxy_value = 
+https_proxy_value = 
+ftp_proxy_value = 

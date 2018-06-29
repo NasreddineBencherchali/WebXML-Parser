@@ -11,8 +11,6 @@ application_pages_path = config.get("WebXML-Parser-Config","application_pages_pa
 application_name = config.get("WebXML-Parser-Config","application_name")
 application_ip_address = config.get("WebXML-Parser-Config","application_ip_address")
 https_bool = config.getboolean("WebXML-Parser-Config","https_bool")
-proxy_bool = config.getboolean("WebXML-Parser-Config","proxy_bool")
-
 
 # Building the list of all the available pages
 list_of_all_pages = []
