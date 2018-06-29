@@ -1,0 +1,7 @@
+[WebXML-Parser-Config]
+web_xml_path = C:/Users/monst/Downloads/Compressed/Source Code/Gparc/Gparc-web-1.0/WEB-INF/web.xml
+application_pages_path = C:/Users/monst/Downloads/Compressed/Source Code/Gparc/Gparc-web-1.0/pages
+application_name = MyApp
+application_ip_address = 192.168.1.1
+https_bool = True
+proxy_bool = False
