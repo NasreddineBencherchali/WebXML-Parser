@@ -12,7 +12,7 @@ It also checks for the pages (URL's) that are not protected by an **Auth-Constra
 Install requirements :
 
 ```bash
-pip install -r requirements.txt
+pip install -r Requirements.txt
 ```
 
 ## Usage
