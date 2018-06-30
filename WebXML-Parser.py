@@ -3,6 +3,22 @@ import os
 import xml.etree.ElementTree as ET
 import ConfigParser
 
+print (r"""
+ __    __     _              __  __          __  
+/ / /\ \ \___| |__           \ \/ / /\/\    / /  
+\ \/  \/ / _ \ '_ \   _____   \  / /    \  / /   
+ \  /\  /  __/ |_) | |_____|  /  \/ /\/\ \/ /___ 
+  \/  \/ \___|_.__/          /_/\_\/    \/\____/ 
+                                                 
+   ___                                           
+  / _ \__ _ _ __ ___  ___ _ __                   
+ / /_)/ _` | '__/ __|/ _ \ '__|                  
+/ ___/ (_| | |  \__ \  __/ |                     
+\/    \__,_|_|  |___/\___|_|                     
+                                                 
+""")
+
+
 config = ConfigParser.ConfigParser()
 config.readfp(open(r'Config.txt'))
 
@@ -151,6 +167,8 @@ with open("List_Of_URL.txt", "w") as list_of_url_file:
         # Add the URL's to the list
         if url not in list_of_urls:
             list_of_urls.append(url)
+
+    print (r"[*]  List of URL's has been generated  [*]")
 
 ########################
 # CREATING THE FILE THAT CONTAINS THE URLS (END) #

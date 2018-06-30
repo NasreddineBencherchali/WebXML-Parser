@@ -3,6 +3,21 @@ from selenium import webdriver
 from bs4 import BeautifulSoup, Comment
 import ConfigParser
 
+print (r"""
+   _         _                                
+  /_\  _   _| |_ ___                          
+ //_\\| | | | __/ _ \                         
+/  _  \ |_| | || (_) |                        
+\_/ \_/\__,_|\__\___/                         
+                                              
+   __                            _            
+  /__\ ___  __ _ _   _  ___  ___| |_ ___ _ __ 
+ / \/// _ \/ _` | | | |/ _ \/ __| __/ _ \ '__|
+/ _  \  __/ (_| | |_| |  __/\__ \ ||  __/ |   
+\/ \_/\___|\__, |\__,_|\___||___/\__\___|_|   
+              |_|                             
+""")
+
 config = ConfigParser.ConfigParser()
 config.readfp(open(r'Config.txt'))
 
@@ -43,6 +58,8 @@ def get_screenshot(driver_instance, path_to_image, image_ext):
 
 list_of_urls = []
 
+print (r"[*]  Creating the list of URL's...  [*]")
+
 with open("List_Of_URL.txt", "r") as url_list:
     for url in url_list.readlines():
         if "http" in url:
@@ -71,6 +88,8 @@ if proxy_bool:
         driver = start_driver(proxyDict["http"])
 else:
     driver = start_driver()
+
+print (r"[*]  Requesting the URL's...  [*]")
 
 for every_url in filtered_list_of_urls:
     driver.get(every_url)
