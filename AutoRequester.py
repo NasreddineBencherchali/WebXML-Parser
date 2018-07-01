@@ -63,7 +63,6 @@ print (r"[*]  Creating the list of URL's...  [*]")
 with open("List_Of_URL.txt", "r") as url_list:
     for url in url_list.readlines():
         if "http" in url:
-            print url
             list_of_urls.append(url.strip())
 
 # We filter the pages that are working from the pages that returns a 404 or something else
@@ -77,7 +76,7 @@ for every_url in list_of_urls:
     beautiful_source_code = BeautifulSoup(source_code, 'html.parser')
     
     # List of strings that are not accepted in the title (We ignore the URL)
-    list_of_unaccepted_strings = ["404", "4043", "error", "erreur", "403"]
+    list_of_unaccepted_strings = map(str.split, config.get("WebXML-Parser-Config","list_of_unaccepted_strings").split(','))
 
     # Bool to determine if we add the url in the list or not 
     unaccepted_strings_bool = False
@@ -91,6 +90,8 @@ for every_url in list_of_urls:
 
 # Create an auto Requester of the pages with seleinum 
 # Instantiate a selenium driver
+
+print (r"[*]  Creating the file Filtered_List_Of_URL.txt ...  [*]")
 
 open("Filtered_List_Of_URL.txt", 'w').close()
 
