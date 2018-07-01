@@ -135,7 +135,7 @@ list_of_urls = []
 open("List_Of_URL.txt", 'w').close()
 
 with open("List_Of_URL.txt", "w") as list_of_url_file:
-    list_of_url_file.write("-- THIS IS ARE THE PAGES THAT ARE NOT LISTED IN THE WEB.XML FILE -- \n\n")
+    list_of_url_file.write("-- THESE ARE THE PAGES THAT ARE NOT LISTED IN THE WEB.XML FILE -- \n\n")
     for page in list_of_pages_not_in_web_xml:
         if https_bool:
             url = "https://"
@@ -151,7 +151,7 @@ with open("List_Of_URL.txt", "w") as list_of_url_file:
         # Add the URL's to the list
         list_of_urls.append(url)
     
-    list_of_url_file.write("\n-- THIS IS ARE THE PAGES THAT ARE NOT PROTECTED BY Auth-Constraint IN THE WEB.XML FILE -- \n\n")
+    list_of_url_file.write("\n-- THESE ARE THE PAGES THAT ARE NOT PROTECTED BY Auth-Constraint IN THE WEB.XML FILE -- \n\n")
     for page in list_of_non_protected_urls_in_web_xml:
         if https_bool:
             url = "https://"

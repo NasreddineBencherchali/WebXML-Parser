@@ -75,24 +75,45 @@ for every_url in list_of_urls:
         source_code = requests.get(every_url, proxies=proxyDict, verify=False).text
         
     beautiful_source_code = BeautifulSoup(source_code, 'html.parser')
-    if ("404" or "403" ) not in beautiful_source_code.title.string :
+    
+    # List of strings that are not accepted in the title (We ignore the URL)
+    list_of_unaccepted_strings = ["404", "4043", "error", "erreur", "403"]
+
+    # Bool to determine if we add the url in the list or not 
+    unaccepted_strings_bool = False
+
+    for unaccepted_strings in list_of_unaccepted_strings:
+        if unaccepted_strings in beautiful_source_code.title.string:
+            unaccepted_strings_bool = True
+
+    if not unaccepted_strings_bool :
         filtered_list_of_urls.append(every_url)
 
 # Create an auto Requester of the pages with seleinum 
 # Instantiate a selenium driver
 
-if proxy_bool:
-    if https_bool:
-        driver = start_driver(proxyDict["https"])
+open("Filtered_List_Of_URL.txt", 'w').close()
+
+with open("Filtered_List_Of_URL.txt", "w") as Filtered_List_Of_URL:
+    ("-- THESE ARE THE PAGES THAT ARE ACCESSIBLE AND SHOW SOMETHING ON THE SCREEN -- \n\n")
+    for every_url in filtered_list_of_urls:
+        Filtered_List_Of_URL.write(every_url + "\n")
+
+screenshot_bool = str(raw_input("Capture screenshots of the pages with Selenium (Y/N) : "))
+
+if screenshot_bool.upper() == "Y":
+    if proxy_bool:
+        if https_bool:
+            driver = start_driver(proxyDict["https"])
+        else:
+            driver = start_driver(proxyDict["http"])
     else:
-        driver = start_driver(proxyDict["http"])
-else:
-    driver = start_driver()
+        driver = start_driver()
 
-print (r"[*]  Requesting the URL's...  [*]")
+    print (r"[*]  Requesting the URL's...  [*]")
 
-for every_url in filtered_list_of_urls:
-    driver.get(every_url)
-    get_screenshot(driver, every_url[every_url.rfind('/') + 1 :], ".png")
+    for every_url in filtered_list_of_urls:
+        driver.get(every_url)
+        get_screenshot(driver, every_url[every_url.rfind('/') + 1 :], ".png")
 
-driver.quit()
+    driver.quit()
