@@ -1,7 +1,11 @@
 import re
 import os
 import xml.etree.ElementTree as ET
-import ConfigParser
+
+try:
+    import configparser as ConfigParser
+except:
+    import ConfigParser
 
 print (r"""
  __    __     _              __  __          __  

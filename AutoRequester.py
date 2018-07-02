@@ -1,7 +1,11 @@
 import requests
 from selenium import webdriver
 from bs4 import BeautifulSoup, Comment
-import ConfigParser
+
+try:
+    import configparser as ConfigParser
+except:
+    import ConfigParser
 
 print (r"""
    _         _                                

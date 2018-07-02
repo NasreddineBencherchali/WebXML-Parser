@@ -1,4 +1,4 @@
-# WebXML-Parser [![python](https://img.shields.io/badge/Python-2.7-green.svg?style=style=flat-square)](https://www.python.org/downloads/)  [![version](https://img.shields.io/badge/Version-Beta-blue.svg?style=style=flat-square)](https://twitter.com/nas_bench)
+# WebXML-Parser [![python](https://img.shields.io/badge/Python-2.7-green.svg?style=style=flat-square)](https://www.python.org/downloads/)  [![python](https://img.shields.io/badge/Python-3-green.svg?style=style=flat-square)](https://www.python.org/downloads/)  [![version](https://img.shields.io/badge/Version-Beta-blue.svg?style=style=flat-square)](https://twitter.com/nas_bench)
 
 **WebXML-Parser** Takes the web pages of a JEE project (xhtml, jsp...etc.), and returns a file with the URL's that are not defined in **WEB.xml** (Glassfish, Tomcat...etc.).
 It also checks for the pages (URL's) that are not protected by an **Auth-Constraint**
