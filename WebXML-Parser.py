@@ -38,11 +38,14 @@ for root, dirs, files in os.walk(application_pages_path):
     for page_names in files:
         # Removes the '\' and replace them with '/' (To prepare the URL format) 
         full_path_of_page = os.path.join(root, page_names).replace('\\','/')
-
-        # We take only the string from the "pages" position 
-        full_path_of_page = full_path_of_page[full_path_of_page.find('pages') - 1:]
         
-        list_of_all_pages.append(full_path_of_page)
+        # Checks weather the page is a .xhtml / .jsp
+        if (".xhtml" in full_path_of_page) or (".jsp" in full_path_of_page):
+            
+            # We take only the string from the length of application_pages_path 
+            full_path_of_page = full_path_of_page[len(application_pages_path) - 1:]
+            
+            list_of_all_pages.append(full_path_of_page)
 
 # Get the content of the WEB XML file
 web_xml_content = ""
