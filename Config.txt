@@ -1,9 +1,9 @@
 [WebXML-Parser-Config]
 ; The path of the web.xml file
-web_xml_path = C:/Users/monst/Downloads/Compressed/Source Code/Gparc/Gparc-web-1.0/WEB-INF/web.xml
+web_xml_path = C:/Users/user/application/WEB-INF/web.xml
 
 ; The path of the application web pages
-application_pages_path = C:/Users/monst/Downloads/Compressed/Source Code/Gparc/Gparc-web-1.0/pages
+application_pages_path =  C:/Users/user/application/pages
 
 ; The name of the application, as it shows in the URL
 application_name = MyApp
