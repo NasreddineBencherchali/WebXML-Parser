@@ -120,7 +120,7 @@ for each_element in root:
             if type(each_element[2]) != type(None):
                 auth_constraint_role_name = each_element[2][1].text
 
-                # We check if the role_name in the <auth-constraint> tag is available in the LIST OF ROLES AND in the <web-resource-collection> 
+                # We check if the role_name in the <auth-constraint> tag is available in the LIST OF ROLES AND is not empty
                 if auth_constraint_role_name == "":
                     list_of_non_protected_urls_in_web_xml.append(url_pattern)
                 elif not (auth_constraint_role_name in list_of_security_role):
