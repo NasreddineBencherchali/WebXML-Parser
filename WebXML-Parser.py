@@ -115,17 +115,19 @@ list_of_non_protected_urls_in_web_xml = []
 for each_element in root:
     if "security-constraint" in each_element.tag:
         url_pattern = each_element[1][2].text
-        web_resource_name = each_element[1][0].text
+        
+        try:
+            if type(each_element[2]) != type(None):
+                auth_constraint_role_name = each_element[2][1].text
 
-        if type(each_element[2]) != type(None):
-            auth_constraint_role_name = each_element[2][1].text
-
-            # We check if the role_name in the <auth-constraint> tag is available in the LIST OF ROLES AND in the <web-resource-collection> 
-            if not ((auth_constraint_role_name in web_resource_name) and (auth_constraint_role_name in list_of_security_role)):
-                list_of_non_protected_urls_in_web_xml.append((url_pattern, web_resource_name))
-       
-        else:
-            list_of_non_protected_urls_in_web_xml.append((url_pattern, web_resource_name))
+                # We check if the role_name in the <auth-constraint> tag is available in the LIST OF ROLES AND in the <web-resource-collection> 
+                if auth_constraint_role_name == "":
+                    list_of_non_protected_urls_in_web_xml.append(url_pattern)
+                elif not (auth_constraint_role_name in list_of_security_role):
+                    list_of_non_protected_urls_in_web_xml.append(url_pattern)
+           
+        except:
+                list_of_non_protected_urls_in_web_xml.append(url_pattern)
 
 ########################
 # CREATING THE LIST OF URL'S THAT ARE NOT PROTECTED BY AUTH-CONSTRAINT IN WEB XML (END) #
@@ -150,7 +152,7 @@ with open("List_Of_URL.txt", "w") as list_of_url_file:
             url = "http://"
 
         # Create the URL
-        url = url + application_ip_address + "/" + application_name + page
+        url = url + application_ip_address + "/" + application_name + page[1:]
 
         # Add the URL's to the file
         list_of_url_file.write(url + "\n")
@@ -166,7 +168,7 @@ with open("List_Of_URL.txt", "w") as list_of_url_file:
             url = "http://"
 
         # Create the URL
-        url = url + application_ip_address + "/" + application_name + page[0]
+        url = url + application_ip_address + "/" + application_name + page
 
         # Add the URL's to the file
         list_of_url_file.write(url + "\n")
