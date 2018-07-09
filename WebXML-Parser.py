@@ -1,6 +1,7 @@
 import re
 import os
 import xml.etree.ElementTree as ET
+import unicodedata
 
 try:
     import configparser as ConfigParser
@@ -56,6 +57,7 @@ with open(web_xml_path, 'r') as web_xml:
 # Building the list of the pages that are not found in the WEB XML file
 list_of_pages_not_in_web_xml = []
 for page in list_of_all_pages:
+    page = unicodedata.normalize('NFKD', page).encode('ascii','ignore')
     if page not in web_xml_content:
         list_of_pages_not_in_web_xml.append(page)
 
