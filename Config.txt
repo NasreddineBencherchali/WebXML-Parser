@@ -22,4 +22,4 @@ ftp_proxy_value =
 
 ; List of unaccepted strings in the title 
 ; Used in the autorequester script to filter the url's that does not show any content
-list_of_unaccepted_strings = 404, 4043, error, erreur, 403
+list_of_unaccepted_strings = 404, 4043, error, erreur, 403, Erreur

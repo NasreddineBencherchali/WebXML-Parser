@@ -1,11 +1,15 @@
 import requests
 from selenium import webdriver
 from bs4 import BeautifulSoup, Comment
+import urllib3
 
 try:
     import configparser as ConfigParser
 except:
     import ConfigParser
+
+# This is added to supress the warnings of the insecure requests (SSL - verify=False)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 print (r"""
    _         _                                
@@ -66,7 +70,7 @@ print (r"[*]  Creating the list of URL's...  [*]")
 
 with open("List_Of_URL.txt", "r") as url_list:
     for url in url_list.readlines():
-        if "http" in url:
+        if ("http" in url) and ("*" not in url):
             list_of_urls.append(url.strip())
 
 # We filter the pages that are working from the pages that returns a 404 or something else
@@ -86,9 +90,10 @@ for every_url in list_of_urls:
     unaccepted_strings_bool = False
 
     for unaccepted_strings in list_of_unaccepted_strings:
-        if unaccepted_strings in beautiful_source_code.title.string:
-            unaccepted_strings_bool = True
-            break
+        if type(beautiful_source_code.title) != type(None):
+            if unaccepted_strings in beautiful_source_code.title.string:
+                unaccepted_strings_bool = True
+                break
 
     if not unaccepted_strings_bool :
         filtered_list_of_urls.append(every_url)
@@ -105,7 +110,7 @@ with open("Filtered_List_Of_URL.txt", "w") as Filtered_List_Of_URL:
     for every_url in filtered_list_of_urls:
         Filtered_List_Of_URL.write(every_url + "\n")
 
-screenshot_bool = str(raw_input("Capture screenshots of the pages with Selenium (Y/N) : "))
+screenshot_bool = str(input("Capture screenshots of the pages with Selenium (Y/N) : "))
 
 if screenshot_bool.upper() == "Y":
     if proxy_bool:

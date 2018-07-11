@@ -1,4 +1,4 @@
 requests
 selenium
 bs4
-ConfigParser
+xmltodict

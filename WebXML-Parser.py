@@ -1,7 +1,6 @@
 import re
 import os
-import xml.etree.ElementTree as ET
-import unicodedata
+import xmltodict
 
 try:
     import configparser as ConfigParser
@@ -48,19 +47,53 @@ for root, dirs, files in os.walk(application_pages_path):
             
             list_of_all_pages.append(full_path_of_page)
 
-# Get the content of the WEB XML file
-web_xml_content = ""
+# Get all the pages in the web.xml file
+pages_in_web_xml = []
+# This skip value is used to skip the comments in the XML file
+skip = False
 with open(web_xml_path, 'r') as web_xml:
     for lines in web_xml.readlines():
-        web_xml_content += lines
+        if "<!--" in lines: 
+            skip = True
+        elif "-->" in lines:
+            skip = False
+
+        if not skip:
+            if (".xhtml" in lines) or (".jsp" in lines) or ('*' in lines):
+                lines = lines[lines.find('>') + 1 : ]
+                lines = lines[ : lines.find('<')]
+                pages_in_web_xml.append(lines)
+
+# We remove the star from the pages that have a '*' in their path
+# For example : /path/to/page/* => /path/to/page/
+pages_in_web_xml_without_star = []
+for star_pages in pages_in_web_xml:
+    if "*" in star_pages:
+        star_pages = star_pages[ : star_pages.find("*")]
+        # We check if the pages is not empty
+        if not star_pages == "":
+            pages_in_web_xml_without_star.append(star_pages)
+
+
 
 # Building the list of the pages that are not found in the WEB XML file
+# Star pages are the pages that ends with a star such as (/pages/level1/level2/*)
 list_of_pages_not_in_web_xml = []
-for page in list_of_all_pages:
-    page = unicodedata.normalize('NFKD', page).encode('ascii','ignore')
-    if page not in web_xml_content:
-        list_of_pages_not_in_web_xml.append(page)
-
+# We loop through every page that existe in the folder
+for every_page in list_of_all_pages:
+    # We then check if it's not found inside the list of pages available in the Web.XML
+    if every_page not in pages_in_web_xml:
+        # This boolean is used to check weather the page contains an element of star pages
+        # Example : every_page = /path/to/page/page.xhtml ; without_star_pages = /path/to/page/
+        without_star_pages_bool = True
+        for without_star_pages in pages_in_web_xml_without_star:
+            if without_star_pages in every_page:
+                without_star_pages_bool = False
+                break
+        
+        if without_star_pages_bool:
+            list_of_pages_not_in_web_xml.append(every_page)
+                
 
 
 ########################
@@ -70,66 +103,74 @@ for page in list_of_all_pages:
 # We parse the WEB.XML file for the <security-role> and the <security-constraint> tags
 # To check if any URL's in the WEB XML file are missing the <auth-constraint> tag which mean that they can be accessed without authentication
 
-tree = ET.parse(web_xml_path)
-root = tree.getroot()
+# Using xmltodict library 
+with open(web_xml_path) as fd:
+    myWebXML = xmltodict.parse(fd.read())
 
 # This list will contain the list of all the security roles in the application, that are listed in the WEB.XML file
 list_of_security_role = []
 
-# Security Role (WEB.XML) Example 
-"""
-    <security-role>
-            <description>  Description  </description> # Level [0]
-            <role-name>  Role_Name  </role-name> # Level [1]
-    </security-role>
-
-"""
-for each_element in root:
-    if "security-role" in each_element.tag:
-        # Sometimes the description tag is empty. Which results in a None variable
-        if type(each_element[0].text) != type(None):
-            role_description = each_element[0].text
-            role_name = each_element[1].text
-
-            # We add only the role name to the list (for later checks)
-            list_of_security_role.append(role_name)
+# getting every role in the WEB XML
+for role in myWebXML['web-app']['security-role']:
+    list_of_security_role.append(role['role-name'])
 
 # This list will contain all the Urls that do not have the <auth-constraint> or are misconfigured
 list_of_non_protected_urls_in_web_xml = []
 
-# Security Constraint (WEB.XML) Example 
-"""
-    <security-constraint>
-        <display-name>  Pentester_010_001_Constraint  </display-name> # Level [0]
-        <web-resource-collection> # Level [1]
-            <web-resource-name>  Pentester_010_001_Constraint  </web-resource-name> # Level [1][0]
-            <description/> # Level [1][1]
-            <url-pattern>  /pages/administration/suividemandeCD/listDemande1.xhtml  </url-pattern> # Level [1][2]
-        </web-resource-collection> # Level [1][0]
-        <auth-constraint> # Level [2]
-            <description/> # Level [2][0]
-            <role-name>  Pentester_010_001  </role-name> # Level [2][1]
-        </auth-constraint> # Level [2]
-    </security-constraint>
+for j in myWebXML['web-app']['security-constraint']:
+    auth_presence = False
+    webresourcecollection = []
 
-"""
+    for ele in j.items():
+        if "web-resource-collection" in ele:
+            webresourcecollection = ele
+            
+        if "auth-constraint" in ele:
+            # Auth constraint bool
+            auth_presence = True
+            
+            if type(ele[1]) == type(None):
+                # Second case : if auth-constraint is found, we check if it's empty. 
+                # If it is, we add the page found in url-pattern
+                urlpattern = webresourcecollection[1]["url-pattern"]
+                if type(urlpattern) == str:
+                    list_of_non_protected_urls_in_web_xml.append(urlpattern)
+                elif type(urlpattern) == list:
+                    for urls in urlpattern:
+                        list_of_non_protected_urls_in_web_xml.append(urls)
+            else:
+                # Third case : if auth-constraint is found and it's not empty, we check the roles 
+                if type(ele[1]["role-name"]) == str:
+                    if not (ele[1]["role-name"] in list_of_security_role):
+                        urlpattern = webresourcecollection[1]["url-pattern"]
+                        if type(urlpattern) == str:
+                            list_of_non_protected_urls_in_web_xml.append(urlpattern)
+                        elif type(urlpattern) == list:
+                            for urls in urlpattern:
+                                list_of_non_protected_urls_in_web_xml.append(urls)
 
-for each_element in root:
-    if "security-constraint" in each_element.tag:
-        url_pattern = each_element[1][2].text
-        
-        try:
-            if type(each_element[2]) != type(None):
-                auth_constraint_role_name = each_element[2][1].text
+                elif type(ele[1]["role-name"]) == list:
+                    role_existance_bool = True
+                    for each_role in ele[1]["role-name"]:
+                        if not (each_role in list_of_security_role):
+                            role_existance_bool = False
+                    
+                    if not role_existance_bool:
+                        urlpattern = webresourcecollection[1]["url-pattern"]
+                        if type(urlpattern) == str:
+                            list_of_non_protected_urls_in_web_xml.append(urlpattern) 
+                        elif type(urlpattern) == list:
+                            for urls in urlpattern:
+                                list_of_non_protected_urls_in_web_xml.append(urls)
 
-                # We check if the role_name in the <auth-constraint> tag is available in the LIST OF ROLES AND is not empty
-                if auth_constraint_role_name == "":
-                    list_of_non_protected_urls_in_web_xml.append(url_pattern)
-                elif not (auth_constraint_role_name in list_of_security_role):
-                    list_of_non_protected_urls_in_web_xml.append(url_pattern)
-           
-        except:
-                list_of_non_protected_urls_in_web_xml.append(url_pattern)
+    # First case : we check if auth-constraint is missing, if it is we add the page
+    if not auth_presence:
+        urlpattern = webresourcecollection[1]["url-pattern"]
+        if type(urlpattern) == str:
+            list_of_non_protected_urls_in_web_xml.append(urlpattern)  
+        elif type(urlpattern) == list:
+            for urls in urlpattern:
+                list_of_non_protected_urls_in_web_xml.append(urls)
 
 ########################
 # CREATING THE LIST OF URL'S THAT ARE NOT PROTECTED BY AUTH-CONSTRAINT IN WEB XML (END) #
@@ -154,7 +195,7 @@ with open("List_Of_URL.txt", "w") as list_of_url_file:
             url = "http://"
 
         # Create the URL
-        url = url + application_ip_address + "/" + application_name + page[1:]
+        url = url + application_ip_address + "/" + application_name + "/" + page[1:]
 
         # Add the URL's to the file
         list_of_url_file.write(url + "\n")
@@ -170,7 +211,7 @@ with open("List_Of_URL.txt", "w") as list_of_url_file:
             url = "http://"
 
         # Create the URL
-        url = url + application_ip_address + "/" + application_name + page
+        url = url + application_ip_address + "/" + application_name  + page
 
         # Add the URL's to the file
         list_of_url_file.write(url + "\n")
