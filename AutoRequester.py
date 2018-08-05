@@ -84,7 +84,8 @@ for every_url in list_of_urls:
     beautiful_source_code = BeautifulSoup(source_code, 'html.parser')
     
     # List of strings that are not accepted in the title (We ignore the URL)
-    list_of_unaccepted_strings = map(str.strip, config.get("WebXML-Parser-Config","list_of_unaccepted_strings").split(','))
+    # Where 'x' is the same element from the list, but without the leading white space.
+    list_of_unaccepted_strings = [x.strip() for x in config.get("WebXML-Parser-Config","list_of_unaccepted_strings").split(',')]
 
     # Bool to determine if we add the url in the list or not 
     unaccepted_strings_bool = False
