@@ -63,6 +63,11 @@ with open(web_xml_path, 'r') as web_xml:
                 lines = lines[lines.find('>') + 1 : ]
                 lines = lines[ : lines.find('<')]
                 pages_in_web_xml.append(lines)
+        else:
+            if "-->" in lines:
+                # This condition ensures that if the comments ends in a single line.
+                # We make the "skip" value return to it's default value.
+                skip = False
 
 # We remove the star from the pages that have a '*' in their path
 # For example : /path/to/page/* => /path/to/page/
