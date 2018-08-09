@@ -1,6 +1,6 @@
 # WebXML-Parser  [![python](https://img.shields.io/badge/Python-3-green.svg?style=style=flat-square)](https://www.python.org/downloads/)  [![version](https://img.shields.io/badge/Version-Beta-blue.svg?style=style=flat-square)](https://twitter.com/nas_bench)
 
-**WebXML-Parser** Takes the web pages of a JEE project (xhtml, jsp), and returns a file with the URL's that are not defined in the **WEB.xml** (Can be accessed without authentication) (Glassfish)
+**WebXML-Parser** Takes the web pages of a JavaEE project (xhtml, jsp), and returns a file with the URL's that are not defined in the **WEB.xml** **(JAAS)** (Can be accessed without authentication)
 
 It also checks for the pages (URL's) that are not protected by an **Auth-Constraint**
 
