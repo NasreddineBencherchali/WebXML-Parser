@@ -73,6 +73,12 @@ with open("List_Of_URL.txt", "r") as url_list:
         if ("http" in url) and ("*" not in url):
             list_of_urls.append(url.strip())
 
+# List of strings that are not accepted in the title (We ignore the URL)
+# Where 'x' is the same element from the list, but without the leading white space.
+list_of_unaccepted_strings_in_title = [x.strip() for x in config.get("WebXML-Parser-Config","list_of_unaccepted_strings_in_title").split(',')]
+list_of_unaccepted_strings_in_content = [x.strip() for x in config.get("WebXML-Parser-Config","list_of_unaccepted_strings_in_content").split(',')]
+
+
 # We filter the pages that are working from the pages that returns a 404 or something else
 filtered_list_of_urls = []
 for every_url in list_of_urls:
@@ -83,20 +89,32 @@ for every_url in list_of_urls:
         
     beautiful_source_code = BeautifulSoup(source_code, 'html.parser')
     
-    # List of strings that are not accepted in the title (We ignore the URL)
-    # Where 'x' is the same element from the list, but without the leading white space.
-    list_of_unaccepted_strings = [x.strip() for x in config.get("WebXML-Parser-Config","list_of_unaccepted_strings").split(',')]
+    # Bool to determine if we add or skip the URL
+    unaccepted_string_bool = False
 
-    # Bool to determine if we add the url in the list or not 
-    unaccepted_strings_bool = False
+    # Bool to determine if the title of the page is none (from our beautifulsoup parser)
+    none_title_bool = False
 
-    for unaccepted_strings in list_of_unaccepted_strings:
+    # We loop through the list of unaccepted titles, if we got at least a match we break.
+    # and we skip this URL
+    for unaccepted_titles in list_of_unaccepted_strings_in_title:
         if type(beautiful_source_code.title) != type(None):
-            if unaccepted_strings in beautiful_source_code.title.string:
-                unaccepted_strings_bool = True
+            if unaccepted_titles in beautiful_source_code.title.string:
+                unaccepted_string_bool = True
+                break
+            else:
+                # If the title is None we break and we check the content
+                none_title_bool = True
                 break
 
-    if not unaccepted_strings_bool :
+    # We jump here, if the title is equal to None
+    if none_title_bool:
+        for unaccepted_content in list_of_unaccepted_strings_in_content:
+            if unaccepted_content in source_code:
+                unaccepted_string_bool = True
+                break
+
+    if not unaccepted_string_bool :
         filtered_list_of_urls.append(every_url)
 
 # Create an auto Requester of the pages with seleinum 
