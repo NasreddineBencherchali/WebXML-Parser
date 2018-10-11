@@ -102,10 +102,10 @@ for every_url in list_of_urls:
             if unaccepted_titles in beautiful_source_code.title.string:
                 unaccepted_string_bool = True
                 break
-            else:
-                # If the title is None we break and we check the content
-                none_title_bool = True
-                break
+        else:
+            # If the title is None we break and we check the content
+            none_title_bool = True
+            break
 
     # We jump here, if the title is equal to None
     if none_title_bool:

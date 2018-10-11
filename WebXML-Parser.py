@@ -43,7 +43,7 @@ for root, dirs, files in os.walk(application_pages_path):
         if (".xhtml" in full_path_of_page) or (".jsp" in full_path_of_page):
             
             # We take only the string from the length of application_pages_path 
-            full_path_of_page = full_path_of_page[len(application_pages_path) - 1:]
+            full_path_of_page = full_path_of_page[len(application_pages_path) :]
             
             list_of_all_pages.append(full_path_of_page)
 
