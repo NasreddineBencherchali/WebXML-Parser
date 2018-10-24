@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests
 from selenium import webdriver
 from bs4 import BeautifulSoup, Comment
@@ -77,7 +78,6 @@ with open("List_Of_URL.txt", "r") as url_list:
 # Where 'x' is the same element from the list, but without the leading white space.
 list_of_unaccepted_strings_in_title = [x.strip() for x in config.get("WebXML-Parser-Config","list_of_unaccepted_strings_in_title").split(',')]
 list_of_unaccepted_strings_in_content = [x.strip() for x in config.get("WebXML-Parser-Config","list_of_unaccepted_strings_in_content").split(',')]
-
 
 # We filter the pages that are working from the pages that returns a 404 or something else
 filtered_list_of_urls = []

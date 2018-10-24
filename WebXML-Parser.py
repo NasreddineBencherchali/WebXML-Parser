@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 import os
 import xmltodict
@@ -21,7 +22,6 @@ print (r"""
 \/    \__,_|_|  |___/\___|_|                     
                                                  
 """)
-
 
 config = ConfigParser.ConfigParser()
 config.readfp(open(r'Config.txt'))
@@ -75,10 +75,9 @@ pages_in_web_xml_without_star = []
 for star_pages in pages_in_web_xml:
     if "*" in star_pages:
         star_pages = star_pages[ : star_pages.find("*")]
-        # We check if the pages is not empty
-        if not star_pages == "":
+        # We check if the page is not empty and does not contain a single slash
+        if star_pages != "" and star_pages != "/":
             pages_in_web_xml_without_star.append(star_pages)
-
 
 
 # Building the list of the pages that are not found in the WEB XML file
@@ -99,8 +98,6 @@ for every_page in list_of_all_pages:
         if without_star_pages_bool:
             list_of_pages_not_in_web_xml.append(every_page)
                 
-
-
 ########################
 # CREATING THE LIST OF URL'S THAT ARE NOT PROTECTED BY AUTH-CONSTRAINT IN WEB XML (START) #
 ########################
@@ -180,7 +177,6 @@ for j in myWebXML['web-app']['security-constraint']:
 ########################
 # CREATING THE LIST OF URL'S THAT ARE NOT PROTECTED BY AUTH-CONSTRAINT IN WEB XML (END) #
 ########################
-
 
 ########################
 # CREATING THE FILE THAT CONTAINS THE URLS (START) #
