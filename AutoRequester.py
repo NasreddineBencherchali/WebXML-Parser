@@ -113,6 +113,13 @@ for every_url in list_of_urls:
             if unaccepted_content in source_code:
                 unaccepted_string_bool = True
                 break
+    # We jump here to make a double check in case if the title is not equal to None 
+    # and the value of unaccepted_string_bool is still false
+    elif not none_title_bool and not unaccepted_string_bool:
+        for unaccepted_content in list_of_unaccepted_strings_in_content:
+            if unaccepted_content in source_code:
+                unaccepted_string_bool = True
+                break
 
     if not unaccepted_string_bool :
         filtered_list_of_urls.append(every_url)
@@ -147,3 +154,6 @@ if screenshot_bool.upper() == "Y":
         get_screenshot(driver, every_url[every_url.rfind('/') + 1 :], ".png")
 
     driver.quit()
+else:
+    exit()
+    
